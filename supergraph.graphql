@@ -1,0 +1,108 @@
+schema
+  @core(feature: "https://specs.apollo.dev/core/v0.2"),
+  @core(feature: "https://specs.apollo.dev/join/v0.1", for: EXECUTION)
+{
+  query: Query
+}
+
+directive @core(as: String, feature: String!, for: core__Purpose) repeatable on SCHEMA
+
+directive @join__field(graph: join__Graph, provides: join__FieldSet, requires: join__FieldSet) on FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__owner(graph: join__Graph!) on INTERFACE | OBJECT
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet) repeatable on INTERFACE | OBJECT
+
+enum CURRENCY_CODE {
+  EUR
+  USD
+}
+
+type Department {
+  category: ProductCategory
+  url: String
+}
+
+type Money {
+  amount: Float
+  currencyCode: CURRENCY_CODE
+}
+
+type Price {
+  cost: Money
+
+  """A number between 0 and 1 signifying the % discount"""
+  deal: Float
+  dealSavings: Money
+}
+
+type Product
+  @join__owner(graph: PRODUCTS)
+  @join__type(graph: PRODUCTS, key: "id")
+  @join__type(graph: REVIEWS, key: "id")
+{
+  category: ProductCategory @join__field(graph: PRODUCTS)
+  description: String @join__field(graph: PRODUCTS)
+  id: ID! @join__field(graph: PRODUCTS)
+  images(size: Int = 1000): [String] @join__field(graph: PRODUCTS)
+  price: Price @join__field(graph: PRODUCTS)
+  primaryImage(size: Int = 1000): String @join__field(graph: PRODUCTS)
+  reviewSummary: ReviewSummary @join__field(graph: REVIEWS)
+  reviews: [Review] @join__field(graph: REVIEWS)
+  salesRank(category: ProductCategory = ALL): Int @join__field(graph: PRODUCTS)
+  salesRankInCategory: Int @join__field(graph: PRODUCTS)
+  salesRankOverall: Int @join__field(graph: PRODUCTS)
+  title: String @join__field(graph: PRODUCTS)
+  url: String @join__field(graph: PRODUCTS)
+}
+
+enum ProductCategory {
+  ALL
+  BOOKS
+  CAMERA_N_PHOTO
+  CLOTHING
+  ELECTRONICS
+  GIFT_CARDS
+  VIDEO_GAMES
+}
+
+type Query {
+  bestSellers(category: ProductCategory = ALL): [Product] @join__field(graph: PRODUCTS)
+  categories: [Department] @join__field(graph: PRODUCTS)
+  product(id: ID!): Product @join__field(graph: PRODUCTS)
+}
+
+type Review
+  @join__owner(graph: REVIEWS)
+  @join__type(graph: REVIEWS, key: "id")
+{
+  content: String @join__field(graph: REVIEWS)
+  id: ID! @join__field(graph: REVIEWS)
+  rating: Float @join__field(graph: REVIEWS)
+}
+
+type ReviewSummary {
+  averageRating: Float
+  totalReviews: Int
+}
+
+enum core__Purpose {
+  """
+  `EXECUTION` features provide metadata necessary to for operation execution.
+  """
+  EXECUTION
+
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  PRODUCTS @join__graph(name: "products" url: "https://rover.apollo.dev/quickstart/products/graphql")
+  REVIEWS @join__graph(name: "reviews" url: "https://rover.apollo.dev/quickstart/reviews/graphql")
+}

@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/roschaefer/auteon-sass/issues"
   },
-  "homepage": "https://github.com/roschaefer/auteon-sass#readme"
+  "homepage": "https://github.com/roschaefer/auteon-sass#readme",
+  "dependencies": {
+    "@apollo/gateway": "^0.44.0",
+    "apollo-server": "^3.5.0",
+    "graphql": "^15.7.2"
+  }
 }
