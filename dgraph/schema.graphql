@@ -1,6 +1,13 @@
+type Manufacturer @key(fields: "id") {
+    id: ID!
+    name: String!
+}
+
 type Product @key(fields: "id") {
     id: ID!
-    name: String
+    articleNumber: String!
+    manufacturer: Manufacturer!
+    name: String!
 }
 
 type Offer @key(fields: "id") {
@@ -13,4 +20,16 @@ type Offer @key(fields: "id") {
 type Supplier @key(fields: "id") {
     id: ID!
     name: String!
+}
+
+type ShoppingCart @key(fields: "id") {
+    id: ID!
+    customer: Customer!
+    offers: [Offer]
+}
+
+type Customer @key(fields: "id") {
+    id: ID!
+    name: String!
+    shoppingCarts: [ShoppingCart]
 }
