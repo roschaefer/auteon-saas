@@ -1,12 +1,13 @@
+# Installation
 
-Start DGraph:
+Run:
 ```
-docker run -it -p 8080:8080 dgraph/standalone:master
+docker-compose up
 ```
 
-Wait for the database to get up and running. Then:
+Wait for the Dgraph service to get up and running. Then:
 ```
-curl -X POST localhost:8080/admin/schema --data-binary '@dgraph/schema.graphql'
+curl -X POST localhost:4002/admin/schema --data-binary '@suppliers/types.graphql'
 ```
 
 Create superschema:

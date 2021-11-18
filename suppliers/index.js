@@ -1,31 +1,37 @@
-const { buildSubgraphSchema } = require('@apollo/subgraph');
 const { ApolloServer, gql } = require('apollo-server');
+const { readFileSync } = require('fs')
+// we must convert the file Buffer to a UTF-8 string
+const Types = readFileSync('./types.graphql').toString('utf-8')
 
-const typeDefs = gql`
-    type Offer @key(fields: "id") {
-        id: ID!
-        purchasePrice: Int
-        product: Product
-        supplier: Supplier
-    }
-
-    extend type Product @key(fields: "id") {
-        id: ID! @external
-    }
-
-    extend type Supplier @key(fields: "id") {
-        id: ID! @external
-    }
-
+const Query = gql`
 type Query {
     search(query: String!): [Offer!]!
 }
 `;
 
+const manufacturer = {
+    id: 42,
+    name: 'Bosch'
+}
+
+const productA = {
+    id: 12,
+    articleNumber: '1a',
+    name: 'Bremsen',
+    manufacturer,
+}
+
+const productB = {
+    id: 13,
+    articleNumber: '1b',
+    name: 'Zündkerzen',
+    manufacturer,
+}
+
 const offers = [
-    {id: 1 },
-    {id: 2 },
-    {id: 3 },
+    {id: 1, purchasePrice: 23, product: productA },
+    {id: 2, purchasePrice: 24, product: productB },
+    {id: 3, purchasePrice: 25, product: productA },
 ]
 
 const resolvers = {
@@ -35,7 +41,7 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-  schema: buildSubgraphSchema([{ typeDefs, resolvers }])
+    typeDefs: [Types, Query], resolvers
 });
 
 server.listen({

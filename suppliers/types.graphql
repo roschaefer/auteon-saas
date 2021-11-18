@@ -1,34 +1,34 @@
-type Manufacturer @key(fields: "id") {
+type Manufacturer {
     id: ID!
     name: String!
 }
 
-type Product @key(fields: "id") {
+type Product {
     id: ID!
     articleNumber: String!
     manufacturer: Manufacturer!
     name: String!
 }
 
-type Offer @key(fields: "id") {
+type Offer {
     id: ID!
-    product: Product
+    product: Product!
     supplier: Supplier
     purchasePrice: Int
 }
 
-type Supplier @key(fields: "id") {
+type Supplier {
     id: ID!
     name: String!
 }
 
-type ShoppingCart @key(fields: "id") {
+type ShoppingCart {
     id: ID!
     customer: Customer!
     offers: [Offer]
 }
 
-type Customer @key(fields: "id") {
+type Customer {
     id: ID!
     name: String!
     shoppingCarts: [ShoppingCart]

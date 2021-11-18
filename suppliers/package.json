@@ -1,7 +1,7 @@
 {
-  "name": "auteon-sass",
+  "name": "suppliers",
   "version": "0.1.0",
-  "description": "Demo application for apollo federation, Dgraph und GraphQL subscriptions.",
+  "description": "Supplier backend",
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/roschaefer/auteon-sass#readme",
   "dependencies": {
-    "@apollo/gateway": "^0.44.0",
-    "apollo-server": "^3.5.0"
+    "apollo-server": "^3.5.0",
+    "graphql": "^15.7.2"
   }
 }
