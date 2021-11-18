@@ -33,3 +33,12 @@ type Customer {
     name: String!
     shoppingCarts: [ShoppingCart]
 }
+
+type User {
+    sub: String!
+    name: String
+    preferred_username: String
+    given_name: String
+    family_name: String
+    email: String
+}

@@ -7,6 +7,8 @@ volumes:
 services:
   suppliers:
     build: suppliers
+    environment:
+      JWT_PUBLIC_KEY: "${JWT_PUBLIC_KEY}"
     ports:
       - 4001:4001
   dgraph:

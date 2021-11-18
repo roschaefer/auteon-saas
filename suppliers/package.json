@@ -18,6 +18,7 @@
   "homepage": "https://github.com/roschaefer/auteon-sass#readme",
   "dependencies": {
     "apollo-server": "^3.5.0",
-    "graphql": "^15.7.2"
+    "graphql": "^15.7.2",
+    "jsonwebtoken": "^8.5.1"
   }
 }
