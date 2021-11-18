@@ -3,6 +3,7 @@ schema
   @core(feature: "https://specs.apollo.dev/join/v0.1", for: EXECUTION)
 {
   query: Query
+  mutation: Mutation
 }
 
 directive @core(as: String, feature: String!, for: core__Purpose) repeatable on SCHEMA
@@ -15,77 +16,487 @@ directive @join__owner(graph: join__Graph!) on INTERFACE | OBJECT
 
 directive @join__type(graph: join__Graph!, key: join__FieldSet) repeatable on INTERFACE | OBJECT
 
-enum CURRENCY_CODE {
-  EUR
-  USD
+input AddOfferInput {
+  product: ProductRef
+  purchasePrice: Int
+  supplier: SupplierRef
 }
 
-type Department {
-  category: ProductCategory
-  url: String
+type AddOfferPayload {
+  numUids: Int
+  offer(filter: OfferFilter, first: Int, offset: Int, order: OfferOrder): [Offer]
 }
 
-type Money {
-  amount: Float
-  currencyCode: CURRENCY_CODE
+input AddProductInput {
+  name: String
 }
 
-type Price {
-  cost: Money
+type AddProductPayload {
+  numUids: Int
+  product(filter: ProductFilter, first: Int, offset: Int, order: ProductOrder): [Product]
+}
 
-  """A number between 0 and 1 signifying the % discount"""
-  deal: Float
-  dealSavings: Money
+input AddSupplierInput {
+  name: String!
+}
+
+type AddSupplierPayload {
+  numUids: Int
+  supplier(filter: SupplierFilter, first: Int, offset: Int, order: SupplierOrder): [Supplier]
+}
+
+input AuthRule {
+  and: [AuthRule]
+  not: AuthRule
+  or: [AuthRule]
+  rule: String
+}
+
+input ContainsFilter {
+  point: PointRef
+  polygon: PolygonRef
+}
+
+input CustomHTTP {
+  body: String
+  forwardHeaders: [String!]
+  graphql: String
+  introspectionHeaders: [String!]
+  method: HTTPMethod!
+  mode: Mode
+  secretHeaders: [String!]
+  skipIntrospection: Boolean
+  url: String!
+}
+
+"""
+The DateTime scalar type represents date and time as a string in RFC3339 format.
+For example: "1985-04-12T23:20:50.52Z" represents 20 minutes and 50.52 seconds after the 23rd hour of April 12th, 1985 in UTC.
+"""
+scalar DateTime
+
+input DateTimeFilter {
+  between: DateTimeRange
+  eq: DateTime
+  ge: DateTime
+  gt: DateTime
+  in: [DateTime]
+  le: DateTime
+  lt: DateTime
+}
+
+input DateTimeRange {
+  max: DateTime!
+  min: DateTime!
+}
+
+type DeleteOfferPayload {
+  msg: String
+  numUids: Int
+  offer(filter: OfferFilter, first: Int, offset: Int, order: OfferOrder): [Offer]
+}
+
+type DeleteProductPayload {
+  msg: String
+  numUids: Int
+  product(filter: ProductFilter, first: Int, offset: Int, order: ProductOrder): [Product]
+}
+
+type DeleteSupplierPayload {
+  msg: String
+  numUids: Int
+  supplier(filter: SupplierFilter, first: Int, offset: Int, order: SupplierOrder): [Supplier]
+}
+
+enum DgraphIndex {
+  bool
+  day
+  exact
+  float
+  fulltext
+  geo
+  hash
+  hour
+  int
+  int64
+  month
+  regexp
+  term
+  trigram
+  year
+}
+
+input FloatFilter {
+  between: FloatRange
+  eq: Float
+  ge: Float
+  gt: Float
+  in: [Float]
+  le: Float
+  lt: Float
+}
+
+input FloatRange {
+  max: Float!
+  min: Float!
+}
+
+input GenerateMutationParams {
+  add: Boolean
+  delete: Boolean
+  update: Boolean
+}
+
+input GenerateQueryParams {
+  aggregate: Boolean
+  get: Boolean
+  password: Boolean
+  query: Boolean
+}
+
+enum HTTPMethod {
+  DELETE
+  GET
+  PATCH
+  POST
+  PUT
+}
+
+"""
+The Int64 scalar type represents a signed 64‐bit numeric non‐fractional value.
+Int64 can represent values in range [-(2^63),(2^63 - 1)].
+"""
+scalar Int64
+
+input Int64Filter {
+  between: Int64Range
+  eq: Int64
+  ge: Int64
+  gt: Int64
+  in: [Int64]
+  le: Int64
+  lt: Int64
+}
+
+input Int64Range {
+  max: Int64!
+  min: Int64!
+}
+
+input IntFilter {
+  between: IntRange
+  eq: Int
+  ge: Int
+  gt: Int
+  in: [Int]
+  le: Int
+  lt: Int
+}
+
+input IntRange {
+  max: Int!
+  min: Int!
+}
+
+input IntersectsFilter {
+  multiPolygon: MultiPolygonRef
+  polygon: PolygonRef
+}
+
+enum Mode {
+  BATCH
+  SINGLE
+}
+
+type MultiPolygon {
+  polygons: [Polygon!]!
+}
+
+input MultiPolygonRef {
+  polygons: [PolygonRef!]!
+}
+
+type Mutation {
+  addOffer(input: [AddOfferInput!]!): AddOfferPayload @join__field(graph: DGRAPH)
+  addProduct(input: [AddProductInput!]!): AddProductPayload @join__field(graph: DGRAPH)
+  addSupplier(input: [AddSupplierInput!]!): AddSupplierPayload @join__field(graph: DGRAPH)
+  deleteOffer(filter: OfferFilter!): DeleteOfferPayload @join__field(graph: DGRAPH)
+  deleteProduct(filter: ProductFilter!): DeleteProductPayload @join__field(graph: DGRAPH)
+  deleteSupplier(filter: SupplierFilter!): DeleteSupplierPayload @join__field(graph: DGRAPH)
+  updateOffer(input: UpdateOfferInput!): UpdateOfferPayload @join__field(graph: DGRAPH)
+  updateProduct(input: UpdateProductInput!): UpdateProductPayload @join__field(graph: DGRAPH)
+  updateSupplier(input: UpdateSupplierInput!): UpdateSupplierPayload @join__field(graph: DGRAPH)
+}
+
+input NearFilter {
+  coordinate: PointRef!
+  distance: Float!
+}
+
+type Offer
+  @join__owner(graph: DGRAPH)
+  @join__type(graph: DGRAPH, key: "id")
+{
+  id: ID! @join__field(graph: DGRAPH)
+  product(filter: ProductFilter): Product @join__field(graph: DGRAPH)
+  purchasePrice: Int @join__field(graph: DGRAPH)
+  supplier(filter: SupplierFilter): Supplier @join__field(graph: DGRAPH)
+}
+
+type OfferAggregateResult {
+  count: Int
+  purchasePriceAvg: Float
+  purchasePriceMax: Int
+  purchasePriceMin: Int
+  purchasePriceSum: Int
+}
+
+input OfferFilter {
+  and: [OfferFilter]
+  has: [OfferHasFilter]
+  id: [ID!]
+  not: OfferFilter
+  or: [OfferFilter]
+}
+
+enum OfferHasFilter {
+  product
+  purchasePrice
+  supplier
+}
+
+input OfferOrder {
+  asc: OfferOrderable
+  desc: OfferOrderable
+  then: OfferOrder
+}
+
+enum OfferOrderable {
+  purchasePrice
+}
+
+input OfferPatch {
+  product: ProductRef
+  purchasePrice: Int
+  supplier: SupplierRef
+}
+
+input OfferRef {
+  id: ID
+  product: ProductRef
+  purchasePrice: Int
+  supplier: SupplierRef
+}
+
+type Point {
+  latitude: Float!
+  longitude: Float!
+}
+
+input PointGeoFilter {
+  near: NearFilter
+  within: WithinFilter
+}
+
+type PointList {
+  points: [Point!]!
+}
+
+input PointListRef {
+  points: [PointRef!]!
+}
+
+input PointRef {
+  latitude: Float!
+  longitude: Float!
+}
+
+type Polygon {
+  coordinates: [PointList!]!
+}
+
+input PolygonGeoFilter {
+  contains: ContainsFilter
+  intersects: IntersectsFilter
+  near: NearFilter
+  within: WithinFilter
+}
+
+input PolygonRef {
+  coordinates: [PointListRef!]!
 }
 
 type Product
-  @join__owner(graph: PRODUCTS)
-  @join__type(graph: PRODUCTS, key: "id")
-  @join__type(graph: REVIEWS, key: "id")
+  @join__owner(graph: DGRAPH)
+  @join__type(graph: DGRAPH, key: "id")
 {
-  category: ProductCategory @join__field(graph: PRODUCTS)
-  description: String @join__field(graph: PRODUCTS)
-  id: ID! @join__field(graph: PRODUCTS)
-  images(size: Int = 1000): [String] @join__field(graph: PRODUCTS)
-  price: Price @join__field(graph: PRODUCTS)
-  primaryImage(size: Int = 1000): String @join__field(graph: PRODUCTS)
-  reviewSummary: ReviewSummary @join__field(graph: REVIEWS)
-  reviews: [Review] @join__field(graph: REVIEWS)
-  salesRank(category: ProductCategory = ALL): Int @join__field(graph: PRODUCTS)
-  salesRankInCategory: Int @join__field(graph: PRODUCTS)
-  salesRankOverall: Int @join__field(graph: PRODUCTS)
-  title: String @join__field(graph: PRODUCTS)
-  url: String @join__field(graph: PRODUCTS)
+  id: ID! @join__field(graph: DGRAPH)
+  name: String @join__field(graph: DGRAPH)
 }
 
-enum ProductCategory {
-  ALL
-  BOOKS
-  CAMERA_N_PHOTO
-  CLOTHING
-  ELECTRONICS
-  GIFT_CARDS
-  VIDEO_GAMES
+type ProductAggregateResult {
+  count: Int
+  nameMax: String
+  nameMin: String
+}
+
+input ProductFilter {
+  and: [ProductFilter]
+  has: [ProductHasFilter]
+  id: [ID!]
+  not: ProductFilter
+  or: [ProductFilter]
+}
+
+enum ProductHasFilter {
+  name
+}
+
+input ProductOrder {
+  asc: ProductOrderable
+  desc: ProductOrderable
+  then: ProductOrder
+}
+
+enum ProductOrderable {
+  name
+}
+
+input ProductPatch {
+  name: String
+}
+
+input ProductRef {
+  id: ID
+  name: String
 }
 
 type Query {
-  bestSellers(category: ProductCategory = ALL): [Product] @join__field(graph: PRODUCTS)
-  categories: [Department] @join__field(graph: PRODUCTS)
-  product(id: ID!): Product @join__field(graph: PRODUCTS)
+  aggregateOffer(filter: OfferFilter): OfferAggregateResult @join__field(graph: DGRAPH)
+  aggregateProduct(filter: ProductFilter): ProductAggregateResult @join__field(graph: DGRAPH)
+  aggregateSupplier(filter: SupplierFilter): SupplierAggregateResult @join__field(graph: DGRAPH)
+  getOffer(id: ID!): Offer @join__field(graph: DGRAPH)
+  getProduct(id: ID!): Product @join__field(graph: DGRAPH)
+  getSupplier(id: ID!): Supplier @join__field(graph: DGRAPH)
+  queryOffer(filter: OfferFilter, first: Int, offset: Int, order: OfferOrder): [Offer] @join__field(graph: DGRAPH)
+  queryProduct(filter: ProductFilter, first: Int, offset: Int, order: ProductOrder): [Product] @join__field(graph: DGRAPH)
+  querySupplier(filter: SupplierFilter, first: Int, offset: Int, order: SupplierOrder): [Supplier] @join__field(graph: DGRAPH)
 }
 
-type Review
-  @join__owner(graph: REVIEWS)
-  @join__type(graph: REVIEWS, key: "id")
+input StringExactFilter {
+  between: StringRange
+  eq: String
+  ge: String
+  gt: String
+  in: [String]
+  le: String
+  lt: String
+}
+
+input StringFullTextFilter {
+  alloftext: String
+  anyoftext: String
+}
+
+input StringHashFilter {
+  eq: String
+  in: [String]
+}
+
+input StringRange {
+  max: String!
+  min: String!
+}
+
+input StringRegExpFilter {
+  regexp: String
+}
+
+input StringTermFilter {
+  allofterms: String
+  anyofterms: String
+}
+
+type Supplier
+  @join__owner(graph: DGRAPH)
+  @join__type(graph: DGRAPH, key: "id")
 {
-  content: String @join__field(graph: REVIEWS)
-  id: ID! @join__field(graph: REVIEWS)
-  rating: Float @join__field(graph: REVIEWS)
+  id: ID! @join__field(graph: DGRAPH)
+  name: String! @join__field(graph: DGRAPH)
 }
 
-type ReviewSummary {
-  averageRating: Float
-  totalReviews: Int
+type SupplierAggregateResult {
+  count: Int
+  nameMax: String
+  nameMin: String
+}
+
+input SupplierFilter {
+  and: [SupplierFilter]
+  has: [SupplierHasFilter]
+  id: [ID!]
+  not: SupplierFilter
+  or: [SupplierFilter]
+}
+
+enum SupplierHasFilter {
+  name
+}
+
+input SupplierOrder {
+  asc: SupplierOrderable
+  desc: SupplierOrderable
+  then: SupplierOrder
+}
+
+enum SupplierOrderable {
+  name
+}
+
+input SupplierPatch {
+  name: String
+}
+
+input SupplierRef {
+  id: ID
+  name: String
+}
+
+input UpdateOfferInput {
+  filter: OfferFilter!
+  remove: OfferPatch
+  set: OfferPatch
+}
+
+type UpdateOfferPayload {
+  numUids: Int
+  offer(filter: OfferFilter, first: Int, offset: Int, order: OfferOrder): [Offer]
+}
+
+input UpdateProductInput {
+  filter: ProductFilter!
+  remove: ProductPatch
+  set: ProductPatch
+}
+
+type UpdateProductPayload {
+  numUids: Int
+  product(filter: ProductFilter, first: Int, offset: Int, order: ProductOrder): [Product]
+}
+
+input UpdateSupplierInput {
+  filter: SupplierFilter!
+  remove: SupplierPatch
+  set: SupplierPatch
+}
+
+type UpdateSupplierPayload {
+  numUids: Int
+  supplier(filter: SupplierFilter, first: Int, offset: Int, order: SupplierOrder): [Supplier]
+}
+
+input WithinFilter {
+  polygon: PolygonRef!
 }
 
 enum core__Purpose {
@@ -103,6 +514,5 @@ enum core__Purpose {
 scalar join__FieldSet
 
 enum join__Graph {
-  PRODUCTS @join__graph(name: "products" url: "https://rover.apollo.dev/quickstart/products/graphql")
-  REVIEWS @join__graph(name: "reviews" url: "https://rover.apollo.dev/quickstart/reviews/graphql")
+  DGRAPH @join__graph(name: "dgraph" url: "http://localhost:8080/graphql")
 }

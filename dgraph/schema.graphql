@@ -1,0 +1,16 @@
+type Product @key(fields: "id") {
+    id: ID!
+    name: String
+}
+
+type Offer @key(fields: "id") {
+    id: ID!
+    product: Product
+    supplier: Supplier
+    purchasePrice: Int
+}
+
+type Supplier @key(fields: "id") {
+    id: ID!
+    name: String!
+}
