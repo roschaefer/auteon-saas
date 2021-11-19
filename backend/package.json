@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/roschaefer/auteon-sass#readme",
   "dependencies": {
+    "@graphql-tools/schema": "^8.3.1",
+    "@graphql-tools/stitch": "^8.4.1",
     "apollo-server": "^3.5.0",
     "graphql": "^15.7.2",
     "jsonwebtoken": "^8.5.1"

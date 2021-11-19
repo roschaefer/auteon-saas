@@ -5,8 +5,8 @@ volumes:
       driver: local
 
 services:
-  suppliers:
-    build: suppliers
+  backend:
+    build: backend
     environment:
       JWT_PUBLIC_KEY: "${JWT_PUBLIC_KEY}"
     ports:

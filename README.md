@@ -7,7 +7,7 @@ docker-compose up
 
 Wait for the Dgraph service to get up and running. Then:
 ```
-curl -X POST localhost:4002/admin/schema --data-binary '@suppliers/types.graphql'
+curl -X POST localhost:4002/admin/schema --data-binary '@backend/types.graphql'
 ```
 
 ## Usage

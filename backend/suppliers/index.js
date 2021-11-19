@@ -1,6 +1,6 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { gql } = require('apollo-server');
+const { makeExecutableSchema } = require('@graphql-tools/schema')
 const { readFileSync } = require('fs')
-const { context } = require('./context')
 // we must convert the file Buffer to a UTF-8 string
 const Types = readFileSync('./types.graphql').toString('utf-8')
 
@@ -43,14 +43,8 @@ const resolvers = {
     },
 };
 
-const server = new ApolloServer({
-    typeDefs: [Types, Query],
-    resolvers,
-    context
-});
+const schema = makeExecutableSchema({
+    typeDefs: [Types, Query], resolvers
+})
 
-server.listen({
-    port: 4001
-}).then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`);
-});
+module.exports = { schema }

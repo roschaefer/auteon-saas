@@ -1,9 +1,0 @@
-subgraphs:
-  dgraph:
-    routing_url: http://localhost:8080/graphql
-    schema:
-      subgraph_url: http://localhost:8080/graphql
-  suppliers:
-    routing_url: http://localhost:4001/
-    schema:
-      subgraph_url: http://localhost:4001/
