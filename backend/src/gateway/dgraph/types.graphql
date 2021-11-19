@@ -29,11 +29,11 @@ type ShoppingCart {
 }
 
 type User {
-    id: ID!
     sub: String! @id
     name: String
     preferred_username: String
     given_name: String
     family_name: String
     email: String
+    shoppingCarts: [ShoppingCart!]! @hasInverse(field: "customer")
 }

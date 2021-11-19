@@ -11,6 +11,7 @@ export default shield({
     "*": deny
   },
   Mutation: {
+    addToShoppingCart: isAuthenticated,
     "*": deny
   }
 }, {

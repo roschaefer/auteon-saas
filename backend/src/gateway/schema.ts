@@ -1,12 +1,15 @@
 import { stitchSchemas } from '@graphql-tools/stitch'
 import dgraph from './dgraph'
 import { gql } from 'apollo-server';
-import resolvers from './resolvers'
+import Resolvers from './resolvers'
 
 const Query = gql`
 type Query {
     currentUser: User
     search(query: String!): [Offer!]!
+}
+type Mutation {
+    addToShoppingCart(filter: ShoppingCartFilter!, offers: [OfferRef]): UpdateShoppingCartPayload
 }
 `;
 
@@ -18,7 +21,7 @@ const gatewaySchema = async () => {
             schema,
         ],
         typeDefs: [Query],
-        resolvers,
+        resolvers: Resolvers( { subschema: schema }),
     })
 }
 
