@@ -1,6 +1,7 @@
-const { gql } = require('apollo-server');
-const { makeExecutableSchema } = require('@graphql-tools/schema')
-const { readFileSync } = require('fs')
+import { gql } from 'apollo-server';
+import { makeExecutableSchema } from '@graphql-tools/schema'
+import { readFileSync } from 'fs'
+
 // we must convert the file Buffer to a UTF-8 string
 const Types = readFileSync('./types.graphql').toString('utf-8')
 
@@ -39,7 +40,7 @@ const offers = [
 const resolvers = {
     Query: {
         search: () => offers,
-        currentUser: (_parent, _args, { user }) => user
+        currentUser: (_parent: unknown, _args: unknown, { user }: { user: unknown }) => user
     },
 };
 
@@ -47,4 +48,4 @@ const schema = makeExecutableSchema({
     typeDefs: [Types, Query], resolvers
 })
 
-module.exports = { schema }
+export default schema

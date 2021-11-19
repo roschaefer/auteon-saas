@@ -9,12 +9,15 @@ services:
     build: backend
     environment:
       JWT_PUBLIC_KEY: "${JWT_PUBLIC_KEY}"
+      DGRAPH_ENDPOINT: http://dgraph:8080/graphql
     ports:
-      - 4001:4001
+      - 4000:4000
+    depends_on:
+      - dgraph
   dgraph:
     image: dgraph/standalone:master
     ports:
-      - 4002:8080
+      - 4001:8080
   postgres:
       image: postgres
       volumes:

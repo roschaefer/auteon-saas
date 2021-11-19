@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken'
 
 const { JWT_PUBLIC_KEY } = process.env
 const pem = ['\n-----BEGIN PUBLIC KEY-----\n', JWT_PUBLIC_KEY, '\n-----END PUBLIC KEY-----\n'].join('')
 
-const getUser = (token) => {
+const getUser = (token: string) => {
    try {
       return jwt.verify(token, pem, { algorithms: ['RS256'] })
    } catch(err) {
@@ -11,7 +11,7 @@ const getUser = (token) => {
    }
 }
 
-const context =  ({ req }) => {
+const context =  ({ req }: { req: { headers: { authorization: string } } }) => {
    // Note: This example uses the `req` argument to access headers,
    // but the arguments received by `context` vary by integration.
    // This means they vary for Express, Koa, Lambda, etc.
@@ -29,4 +29,4 @@ const context =  ({ req }) => {
    return { user };
  }
 
-module.exports = { context }
+export default context
