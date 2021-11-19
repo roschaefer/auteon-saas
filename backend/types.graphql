@@ -24,18 +24,13 @@ type Supplier {
 
 type ShoppingCart {
     id: ID!
-    customer: Customer!
+    customer: User!
     offers: [Offer]
 }
 
-type Customer {
-    id: ID!
-    name: String!
-    shoppingCarts: [ShoppingCart]
-}
-
 type User {
-    sub: String!
+    id: ID!
+    sub: String! @id
     name: String
     preferred_username: String
     given_name: String

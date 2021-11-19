@@ -6,6 +6,8 @@ import { readFileSync } from 'fs'
 const Types = readFileSync('./types.graphql').toString('utf-8')
 
 const Query = gql`
+directive @id on FIELD_DEFINITION
+
 type Query {
     search(query: String!): [Offer!]!
     currentUser: User
