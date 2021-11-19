@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken'
 
 const { JWT_PUBLIC_KEY } = process.env
+if(!JWT_PUBLIC_KEY) throw new Error("You must set JWT_PUBLIC_KEY")
+
 const pem = ['\n-----BEGIN PUBLIC KEY-----\n', JWT_PUBLIC_KEY, '\n-----END PUBLIC KEY-----\n'].join('')
 
 const getUser = (token: string) => {
